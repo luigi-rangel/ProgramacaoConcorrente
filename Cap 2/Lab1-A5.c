@@ -18,6 +18,8 @@ void *multiplicaVetor (void *arg) {
     arr.v[i] *= arr.v[i];
   }
 
+  free(arg);
+
   pthread_exit(NULL);
 
   //necessário na versão Windows
@@ -67,6 +69,9 @@ int main() {
       break;
     }
   } if(i == V_SIZE) printf("Todas as operacoes obtiveram sucesso!\n");
+
+  free(v);
+  free(sol);
 
   pthread_exit(NULL);
 }
