@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
         printf("Com %I64d threads e %I64d numeros: %.10lfs\n", nthreads, N, time);
     }
 
-    // printf("Quantidade de primos = %d\n", numPrimos);
+    printf("Quantidade de primos = %d\n", numPrimos);
 
     free(tid);
 
