@@ -66,6 +66,7 @@ int main(int argc, char *argv[])
     pthread_t *tid;
     double ini, fim, delta;
 
+    //inicializa locks condicionais
     rw_init();
 
     // verifica se o numero de threads foi passado na linha de comando
@@ -125,6 +126,7 @@ int main(int argc, char *argv[])
     free(tid);
     // libera o espaco de memoria da lista
     Free_list(&head_p);
+    // libera os locks condicionais
     rw_destroy();
 
     return 0;
