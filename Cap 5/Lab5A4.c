@@ -12,7 +12,21 @@
 sem_t slotCheio, slotVazio; // semaforos para sincronizacao por condicao
 sem_t mutexGeral;           // semaforo geral de sincronizacao por exclusao mutua
 
-char Buffer[B_SIZE][100]; // buffer compartilhado
+char Buffer[B_SIZE][N_LINHAS]; // buffer compartilhado
+
+// funcao para inserir um elemento no buffer
+void Insere(char *line) {
+    static int in = 0;
+
+    sem_wait(&slotVazio);
+    sem_wait(&mutexGeral);
+
+    strncpy(Buffer[in], line, N_LINHAS);
+    in = (in + 1) % B_SIZE; // incrementa o índice do próximo elemento a ser inserido
+
+    sem_post(&mutexGeral); // libera outras threads
+    sem_post(&slotCheio);  // sinaliza que um slot foi preenchido
+}
 
 // funcao para retirar um elemento no buffer
 char *Retira(void)
@@ -96,7 +110,6 @@ int main(int argc, char **argv)
         pthread_create(&tid[i], NULL, consumidor, NULL); // criando threads para consumir
     }
 
-    i = 0;
     // inserindo linha a linha no Buffer
     while (true)
     {
@@ -106,14 +119,7 @@ int main(int argc, char **argv)
         if (eof) // se o fgets apontar fim de arquivo não coloca no buffer
             break;
 
-        sem_wait(&slotVazio);
-        sem_wait(&mutexGeral);
-
-        strncpy(Buffer[i], line, N_LINHAS);
-        i = (i + 1) % B_SIZE; // incrementa o índice do próximo elemento a ser inserido
-
-        sem_post(&mutexGeral); // libera outras threads
-        sem_post(&slotCheio);  // sinaliza que um slot foi preenchido
+        Insere(line); // insere linha no buffer
     }
 
     // espera todas as threads acabarem
