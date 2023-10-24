@@ -6,21 +6,19 @@
 
 // Monitor
 class LE {
-  private int leit, escr;
-  private boolean emEspera;
+  private int leit, escr, emEspera;
 
   // Construtor
   LE() {
     this.leit = 0;
     this.escr = 0;
-    this.emEspera = false;
+    this.emEspera = 0; // variável adicionada para coordenar bloqueio dos leitores em caso de escritor esperando
   }
 
   // Entrada para leitores
   public synchronized void EntraLeitor(int id) {
     try {
-      while (this.escr > 0 || this.emEspera) {
-        // if (this.escr > 0) {
+      while (this.escr > 0 || this.emEspera > 0) { // verifica que não tem nenhum escrevendo nem esperando para escrever para liberar
         System.out.println("le.leitorBloqueado(" + id + ")");
         wait(); // bloqueia pela condicao logica da aplicacao
       }
@@ -43,7 +41,7 @@ class LE {
     try {
       while ((this.leit > 0) || (this.escr > 0)) {
         System.out.println("le.escritorBloqueado(" + id + ")");
-        this.emEspera = true;
+        this.emEspera += 1; // indica que há escritor esperando para executar
         wait(); // bloqueia pela condicao logica da aplicacao
       }
       this.escr++;
@@ -55,7 +53,7 @@ class LE {
   // Saida para escritores
   public synchronized void SaiEscritor(int id) {
     this.escr--;
-    this.emEspera = false;
+    this.emEspera -= 1;
     notifyAll(); // libera leitores e escritores (caso existam leitores ou escritores bloqueados)
     System.out.println("le.escritorSaindo(" + id + ")");
   }

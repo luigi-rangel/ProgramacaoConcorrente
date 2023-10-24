@@ -5,7 +5,7 @@ class LE:
 		self.escritores = 0
 		self.leitores = 0
 		self.escritoresEsperando = 0 # incrementado a cada escritor bloqueado e decrementado a cada liberação da escrita
-		self.linha = 2 # exibir a linha em que ocorre o erro
+		self.linha = 2 # guarda a linha de execução do output
 
 	def leitorBloqueado(self,id):
 		'''Recebe o id do leitor. Verifica se a decisao de bloqueio esta correta.'''
